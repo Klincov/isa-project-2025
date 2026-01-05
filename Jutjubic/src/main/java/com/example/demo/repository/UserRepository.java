@@ -1,8 +1,12 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.User;
+import com.example.demo.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User,Long> {
+import java.util.Optional;
 
+public interface UserRepository extends JpaRepository<AppUser, Long> {
+    Optional<AppUser> findByEmailIgnoreCase(String email);
+    boolean existsByEmailIgnoreCase(String email);
+    boolean existsByUsernameIgnoreCase(String username);
 }
