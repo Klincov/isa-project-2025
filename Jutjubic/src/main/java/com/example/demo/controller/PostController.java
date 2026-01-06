@@ -7,10 +7,7 @@ import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.security.AppUserDetails;
 import com.example.demo.service.PostService;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
 
@@ -28,6 +25,7 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @CrossOrigin(origins = "http://localhost:5173")
     public Post createPost(
             @RequestParam String title,
             @RequestParam String description,
@@ -38,7 +36,6 @@ public class PostController {
             @RequestParam(required = false) Double lon,
             Authentication authentication
     ) throws IOException {
-
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new UnauthorizedException("Morate biti prijavljeni da biste postavili video.");
         }
@@ -50,7 +47,6 @@ public class PostController {
         if (!video.getContentType().equals("video/mp4")) {
             throw new BadRequestException("Video mora biti u MP4 formatu.");
         }
-
         AppUser user = ((AppUserDetails) authentication.getPrincipal()).getUser();
         return postService.createPost(
                 title, description, tags, video, thumbnail, user, lat, lon
