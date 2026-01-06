@@ -37,23 +37,37 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable());
 
-        http.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http
+                // API → nema CSRF
+                .csrf(csrf -> csrf.disable())
 
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/activate","/upload-video").permitAll()
-                .anyRequest().authenticated()
-        ).securityContext(security ->
-                        security.requireExplicitSave(false)
-                )
+                // SESSION auth
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                );;
+                )
 
-        // rate limit pre autentifikacije
-        http.addFilterBefore(ipRateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+                .securityContext(security ->
+                        security.requireExplicitSave(false)
+                )
+
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/activate"
+                        ).permitAll()
+                        .requestMatchers("/upload-video").authenticated()
+                        .anyRequest().authenticated()
+                )
+
+                // rate limit pre auth
+                .addFilterBefore(
+                        ipRateLimitFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
+
 }
