@@ -38,3 +38,8 @@ build/
 # Env / secrets
 .env
 application-local.properties
+
+# Za video objave
+uploads/
+uploads/videos/
+uploads/thumbnails/

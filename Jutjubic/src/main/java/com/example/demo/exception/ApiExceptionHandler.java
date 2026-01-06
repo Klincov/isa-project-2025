@@ -12,6 +12,30 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiMessage handleUnauthorized(UnauthorizedException ex) {
+        return new ApiMessage(ex.getMessage());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiMessage handleBadRequest(BadRequestException ex) {
+        return new ApiMessage(ex.getMessage());
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiMessage handleFileStorage(FileStorageException ex) {
+        return new ApiMessage(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiMessage handleGeneric(Exception ex) {
+        return new ApiMessage("Došlo je do neočekivane greške.");
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiMessage> validation(MethodArgumentNotValidException ex) {
         String msg = ex.getBindingResult().getFieldErrors().stream()
@@ -36,4 +60,6 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new ApiMessage("Nalog nije aktiviran. Proveri email."));
     }
+
+
 }

@@ -42,9 +42,14 @@ public class SecurityConfig {
         http.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/activate").permitAll()
+                .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/activate","/upload-video").permitAll()
                 .anyRequest().authenticated()
-        );
+        ).securityContext(security ->
+                        security.requireExplicitSave(false)
+                )
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                );;
 
         // rate limit pre autentifikacije
         http.addFilterBefore(ipRateLimitFilter, UsernamePasswordAuthenticationFilter.class);
