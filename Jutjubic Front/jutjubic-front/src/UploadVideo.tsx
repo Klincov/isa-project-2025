@@ -43,9 +43,11 @@ const UploadVideo = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/upload-video', {
-        method: 'POST',
-        credentials:"include",
+      const API_URL = import.meta.env.VITE_API_URL as string;
+
+      const response = await fetch(`${API_URL}/upload-video`, {
+        method: "POST",
+        credentials: "include",
         body: formData,
       })
 
