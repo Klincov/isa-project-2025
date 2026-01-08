@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
-import LatLng from 'leaflet'
+import "./UploadVideo.css"
 
 const LocationPicker = ({ onSelect }: { onSelect: (lat: number, lon: number) => void }) => {
   useMapEvents({
@@ -15,6 +15,8 @@ const LocationPicker = ({ onSelect }: { onSelect: (lat: number, lon: number) => 
 
 
 const UploadVideo = () => {
+  const [success, setSuccess] = useState<string>('')
+  const [tagInput, setTagInput] = useState('')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState<string[]>([])
@@ -43,7 +45,7 @@ const UploadVideo = () => {
     }
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL as string;
+      const API_URL = import.meta.env.VITE_API_URL as string
 
       const response = await fetch(`${API_URL}/upload-video`, {
         method: "POST",
@@ -52,18 +54,44 @@ const UploadVideo = () => {
       })
 
       if (!response.ok) {
-        console.log(response)
-        throw new Error('Došlo je do greške')
+        const err = await response.json()
+        setError(err.message || 'Greška na serveru')
+        return
       }
 
+
       const data = await response.json()
+
+      setSuccess('Video je uspešno postavljen!')
+      setError('')
+
+      setTitle('')
+      setDescription('')
+      setTags([])
+      setVideo(null)
+      setThumbnail(null)
+      setLocation(null)
+
       console.log('Video uspešno postavljen:', data)
     } catch (error) {
-      console.error('Greška prilikom slanja zahteva:', error)
+      setSuccess('')
+      setError('Greška prilikom slanja zahteva')
     }
   }
+  const addTag = () => {
+    const trimmed = tagInput.trim()
 
-  // Handler for file inputs
+    if (!trimmed) return
+    if (tags.includes(trimmed)) return
+
+    setTags([...tags, trimmed])
+    setTagInput('')
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove))
+  }
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
     const file = event.target.files ? event.target.files[0] : null
     if (file) {
@@ -71,37 +99,15 @@ const UploadVideo = () => {
     }
   }
 
-  // Handle adding/removing tags
-  const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    if (value && !tags.includes(value)) {
-      setTags([...tags, value])
-    }
-  }
-  const handleLatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const lat = parseFloat(e.target.value)
-    setLocation(prev => ({
-      lat,
-      lon: prev ? prev.lon : 0 
-    }))
-  }
-
-  const handleLonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const lon = parseFloat(e.target.value)
-    setLocation(prev => ({
-      lat: prev ? prev.lat : 0,
-      lon
-    }))
-  }
-
 
   return (
-    <div>
+    <div className="prompt">
       <h1>Upload Video</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Naslov:</label>
+          <br></br>
           <input
             type="text"
             value={title}
@@ -112,6 +118,8 @@ const UploadVideo = () => {
 
         <div>
           <label>Opis:</label>
+          <br></br>
+
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
@@ -120,17 +128,49 @@ const UploadVideo = () => {
         </div>
 
         <div>
-          <label>Tagovi (razdvojeni zarezom):</label>
-          <input
-            type="text"
-            onBlur={handleTagsChange} // Add tag on blur
-          />
-          <ul>
+          <label>Tagovi:</label>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <input
+              type="text"
+              value={tagInput}
+              onChange={e => setTagInput(e.target.value)}
+              placeholder="Unesi tag"
+            />
+            <button type="button" onClick={addTag}>
+              Dodaj tag
+            </button>
+          </div>
+
+          <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {tags.map(tag => (
-              <li key={tag}>{tag}</li>
+              <span
+                key={tag}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => removeTag(tag)}
+                  style={{
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ✕
+                </button>
+              </span>
             ))}
-          </ul>
+          </div>
         </div>
+
 
         <div>
           <label>Thumbnail (slika):</label>

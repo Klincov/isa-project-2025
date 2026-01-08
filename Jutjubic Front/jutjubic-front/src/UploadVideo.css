@@ -1,3 +1,16 @@
+body{
+  margin:0;
+}
+
+.prompt{
+  min-height: 100vh;
+  width:100vw;
+  margin:auto;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 form {
   display: flex;
   flex-direction: column;
