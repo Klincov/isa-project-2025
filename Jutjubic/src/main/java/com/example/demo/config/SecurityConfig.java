@@ -5,6 +5,7 @@ import com.example.demo.security.IpRateLimitFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,10 +42,7 @@ public class SecurityConfig {
 
         http
                 .cors(Customizer.withDefaults())
-                // API → nema CSRF
                 .csrf(csrf -> csrf.disable())
-
-                // SESSION auth
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
@@ -54,14 +52,18 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",
                                 "/api/auth/activate"
                         ).permitAll()
-                        .requestMatchers("/upload-video").authenticated()
+
+                        .requestMatchers(HttpMethod.POST, "/upload-video").authenticated()
                         .anyRequest().authenticated()
                 )
+
 
                 // rate limit pre auth
                 .addFilterBefore(

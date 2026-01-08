@@ -25,7 +25,7 @@ public class PostService {
         this.fileStorageService = fileStorageService;
     }
 
-    @Transactional(timeout = 30) // rollback ako traje predugo
+    @Transactional(timeout = 30)
     public Post createPost(
             String title,
             String description,
@@ -52,19 +52,19 @@ public class PostService {
             post.setThumbnailPath(thumbnailPath);
             post.setCreatedAt(LocalDateTime.now());
             post.setLatitude(lat);
+            System.out.println("aaaa");
             post.setLongitude(lon);
             post.setAuthor(author);
 
             return postRepository.save(post);
 
         } catch (IOException e) {
-            //brisanje rucno ako je doslo do greske
             if (videoPath != null) fileStorageService.deleteFileIfExists(videoPath);
             if (thumbnailPath != null) fileStorageService.deleteFileIfExists(thumbnailPath);
             throw new FileStorageException("Greška pri čuvanju fajlova.");
-        } catch (Exception e) {
-            throw new ApiException("Neuspešno kreiranje objave.");
+
         }
     }
+
 }
 
