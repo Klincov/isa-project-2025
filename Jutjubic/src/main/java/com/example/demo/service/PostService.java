@@ -55,6 +55,8 @@ public class PostService {
             System.out.println("aaaa");
             post.setLongitude(lon);
             post.setAuthor(author);
+            post.setViewCount(0);
+            post.setLikesCount(0);
 
             return postRepository.save(post);
 

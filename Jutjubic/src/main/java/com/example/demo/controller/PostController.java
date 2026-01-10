@@ -41,7 +41,6 @@ public class PostController {
             @RequestParam(required = false) Double lon,
             Authentication authentication
     ) throws IOException {
-        System.out.println("aaaa");
 
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new UnauthorizedException("Morate biti prijavljeni da biste postavili video.");

@@ -18,8 +18,15 @@ export default function VideoDetails() {
   };
 
   useEffect(() => {
-    load().catch((e) => setError(e.message));
+  if (!id) return;
+
+  (async () => {
+    await api.registerView(id);
+    await load();
+  })().catch(e => setError(e.message));
+
   }, [id]);
+
 
   const like = async () => {
     if (!id) return;
@@ -45,6 +52,7 @@ export default function VideoDetails() {
       <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
         <button onClick={like}>Like ({post.likesCount})</button>
       </div>
+      <p>Views: {post.viewCount}</p>
 
       <h3>Opis</h3>
       <p>{post.description}</p>
