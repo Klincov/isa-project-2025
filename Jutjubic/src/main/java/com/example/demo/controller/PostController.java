@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.PostDto;
 import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Post;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.UnauthorizedException;
+import com.example.demo.repository.PostRepository;
 import com.example.demo.security.AppUserDetails;
 import com.example.demo.service.PostService;
 import org.springframework.http.HttpStatus;
