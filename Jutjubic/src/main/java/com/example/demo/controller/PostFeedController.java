@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.dto.PostDto;
 import com.example.demo.entity.Post;
 import com.example.demo.repository.PostRepository;
+import com.example.demo.service.PostFeedService;
+import com.example.demo.service.PostService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +14,12 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostFeedController {
 
+    private final PostFeedService postFeedService;
     private final PostRepository postRepository;
 
-    public PostFeedController(PostRepository postRepository) {
+    public PostFeedController(PostRepository postRepository, PostFeedService postFeedService) {
         this.postRepository = postRepository;
+        this.postFeedService = postFeedService;
     }
 
     @GetMapping
@@ -30,9 +34,16 @@ public class PostFeedController {
                 .toList();
     }
 
+    @PostMapping("/{id}/view")
+    public void registerView(@PathVariable Long id) {
+        postFeedService.registerView(id);
+    }
+
+
     @GetMapping("/{id}")
     public PostDto.PostDetailsDto details(@PathVariable Long id) {
         Post p = postRepository.findById(id).orElseThrow();
+
         return new PostDto.PostDetailsDto(
                 p.getId(),
                 p.getTitle(),
@@ -43,7 +54,8 @@ public class PostFeedController {
                 p.getLikesCount(),
                 p.getLatitude(),
                 p.getLongitude(),
-                p.getCreatedAt()
+                p.getCreatedAt(),
+                p.getViewCount()
         );
     }
 

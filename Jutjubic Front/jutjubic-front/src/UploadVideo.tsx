@@ -104,6 +104,7 @@ const UploadVideo = () => {
     <div className="prompt">
       <h1>Upload Video</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Naslov:</label>

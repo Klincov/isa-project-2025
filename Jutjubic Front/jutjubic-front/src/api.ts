@@ -56,6 +56,7 @@ export type PostDetailsDto = {
   latitude: number | null;
   longitude: number | null;
   createdAt: string;
+  viewCount: number;
 };
 
 export const api = {
@@ -67,6 +68,7 @@ export const api = {
   listPosts: () => request<PostListItemDto[]>("/api/posts", { method: "GET" }),
   getPost: (id: string) => request<PostDetailsDto>(`/api/posts/${id}`, { method: "GET" }),
   likePost: (id: string) => request<ApiMessage>(`/api/posts/${id}/like`, { method: "POST" }),
+  registerView: (id: string) => request<ApiMessage>(`/api/posts/${id}/view`,{ method: "POST"}),
 };
 
 

@@ -61,7 +61,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/upload-video").authenticated()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
 

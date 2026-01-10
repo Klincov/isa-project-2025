@@ -16,7 +16,8 @@ public class PostDto {
                                  long likesCount,
                                  Double latitude,
                                  Double longitude,
-                                 LocalDateTime createdAt) {}
+                                 LocalDateTime createdAt,
+    long viewCount) {}
 
     public record ApiMessage(String message) {}
 }

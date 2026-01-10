@@ -18,7 +18,9 @@ public class Post {
     @Column(length = 2000)
     private String description;
 
-    private long likesCount;
+    private Long viewCount;
+
+    private Long likesCount;
     public Long getId() { return id; }
 
     @ElementCollection
@@ -111,7 +113,11 @@ public class Post {
         this.author = author;
     }
 
-    public long getLikesCount() { return likesCount; }
+    public Long getLikesCount() { return likesCount; }
 
     public void setLikesCount(long likesCount) { this.likesCount = likesCount; }
+
+    public Long getViewCount(){return viewCount;}
+
+    public void setViewCount(long v){this.viewCount = v;}
 }
