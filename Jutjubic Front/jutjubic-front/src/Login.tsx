@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const res = await api.login({ email, password });
       setInfo(res.message);
-      navigate("/");
+      navigate("/feed");
     } catch (err: any) {
       setError(err?.message ?? "Greška.");
     } finally {

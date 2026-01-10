@@ -18,6 +18,9 @@ public class Post {
     @Column(length = 2000)
     private String description;
 
+    private long likesCount;
+    public Long getId() { return id; }
+
     @ElementCollection
     @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "tag")
@@ -107,4 +110,8 @@ public class Post {
     public void setAuthor(AppUser author) {
         this.author = author;
     }
+
+    public long getLikesCount() { return likesCount; }
+
+    public void setLikesCount(long likesCount) { this.likesCount = likesCount; }
 }

@@ -38,11 +38,36 @@ export type LoginRequest = {
   password: string;
 };
 
+export type PostListItemDto = {
+  id: number;
+  title: string;
+  thumbnailUrl: string;
+  createdAt: string;
+};
+
+export type PostDetailsDto = {
+  id: number;
+  title: string;
+  description: string;
+  tags: string[];
+  videoUrl: string;
+  thumbnailUrl: string;
+  likesCount: number;
+  latitude: number | null;
+  longitude: number | null;
+  createdAt: string;
+};
+
 export const api = {
   register: (body: RegisterRequest) =>
     request<ApiMessage>("/api/auth/register", { method: "POST", body: JSON.stringify(body) }),
   login: (body: LoginRequest) =>
     request<ApiMessage>("/api/auth/login", { method: "POST", body: JSON.stringify(body) }),
+
+  listPosts: () => request<PostListItemDto[]>("/api/posts", { method: "GET" }),
+  getPost: (id: string) => request<PostDetailsDto>(`/api/posts/${id}`, { method: "GET" }),
+  likePost: (id: string) => request<ApiMessage>(`/api/posts/${id}/like`, { method: "POST" }),
 };
+
 
 
