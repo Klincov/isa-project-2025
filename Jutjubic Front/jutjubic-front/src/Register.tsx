@@ -32,6 +32,7 @@ const Register = () => {
       setInfo(res.message);
       setTimeout(() => navigate("/login"), 700);
     } catch (err: any) {
+      console.log(err);
       setError(err?.message ?? "Greška.");
     } finally {
       setLoading(false);
@@ -40,7 +41,7 @@ const Register = () => {
 
   return (
     <div>
-      <h1>Registracija</h1>
+      <h1 style={{textAlign:"center"}}>Registracija</h1>
 
       <form onSubmit={onSubmit} style={{ display: "grid", gap: "12px", minWidth: 320 }}>
         <input placeholder="Email" value={form.email} onChange={(e) => set("email", e.target.value)}
@@ -64,7 +65,7 @@ const Register = () => {
           {loading ? "Slanje..." : "Registruj se"}
         </button>
 
-        {error && <div style={{ color: "salmon" }}>{error}</div>}
+        {error && <div style={{ textAlign:"center",color: "salmon" }}>Greška pri komuniciranju sa serverom</div>}
         {info && <div style={{ color: "lightgreen" }}>{info}</div>}
 
         <div style={{ textAlign: "center" }}>

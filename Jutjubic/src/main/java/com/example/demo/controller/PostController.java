@@ -50,7 +50,14 @@ public class PostController {
             throw new BadRequestException("Video fajl je obavezan.");
         }
 
-        if (!"video/mp4".equals(video.getContentType())) {
+        String thumbnailContentType = thumbnail.getContentType();
+        if (thumbnailContentType == null ||
+                (!thumbnailContentType.equals("image/jpeg") && !thumbnailContentType.equals("image/png"))) {
+            throw new BadRequestException("Thumbnail mora biti JPG ili PNG slika.");
+        }
+
+        String videoContentType = video.getContentType();
+        if (videoContentType == null || !videoContentType.equals("video/mp4")) {
             throw new BadRequestException("Video mora biti u MP4 formatu.");
         }
 
