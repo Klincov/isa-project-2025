@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,6 +46,18 @@ public class FileStorageService {
 
         return target.toString();
     }
+
+
+    @Cacheable(value = "thumbnails")
+    public byte[] loadThumbnail(String path) {
+        System.out.println("ucitan thumbnailll");
+        try {
+            return Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public void deleteFileIfExists(String path) {
         try {

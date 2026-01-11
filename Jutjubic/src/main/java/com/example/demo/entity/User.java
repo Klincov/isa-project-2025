@@ -13,7 +13,7 @@ import java.time.Instant;
                 @UniqueConstraint(name="uk_user_email", columnNames="email"),
                 @UniqueConstraint(name="uk_user_username", columnNames="username")
         })
-public class AppUser {
+public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

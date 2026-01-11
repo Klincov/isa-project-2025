@@ -30,11 +30,20 @@ public class ApiExceptionHandler {
         return new ApiMessage(ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiMessage handleGeneric(Exception ex) {
-        return new ApiMessage("Došlo je do neočekivane greške.");
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiMessage> handleGeneric(Exception ex) {
+        ApiMessage message = new ApiMessage(
+                "ERROR "+
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(message);
     }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiMessage> validation(MethodArgumentNotValidException ex) {

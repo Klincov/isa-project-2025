@@ -23,7 +23,7 @@ public class VerificationToken {
     @OneToOne(optional=false, fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable=false, unique=true,
             foreignKey = @ForeignKey(name="fk_token_user"))
-    private AppUser user;
+    private User user;
 
     @Column(nullable=false)
     private Instant expiresAt;

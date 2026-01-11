@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.AppUser;
+import com.example.demo.entity.User;
 import com.example.demo.entity.VerificationToken;
 import com.example.demo.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class VerificationTokenService {
 
     private final VerificationTokenRepository tokenRepository;
 
-    public VerificationToken createForUser(AppUser user) {
+    public VerificationToken createForUser(User user) {
         VerificationToken token = VerificationToken.builder()
                 .token(UUID.randomUUID().toString().replace("-", ""))
                 .user(user)
