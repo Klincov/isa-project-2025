@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "./api";
+import './Center.css'
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ const Login = () => {
       setInfo(res.message);
       navigate("/feed");
     } catch (err: any) {
+      console.log(err)
       setError(err?.message ?? "Greška.");
     } finally {
       setLoading(false);
@@ -29,7 +32,8 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="center">
+      <div>
       <h1>Prijava</h1>
 
       <form onSubmit={onSubmit} style={{ display: "grid", gap: "12px", minWidth: 320 }}>
@@ -52,13 +56,14 @@ const Login = () => {
           {loading ? "Prijavljivanje..." : "Prijavi se"}
         </button>
 
-        {error && <div style={{ color: "salmon" }}>{error}</div>}
+        {error && <div style={{ color: "salmon" }}>Greška pri komuniciranju sa serverom</div>}
         {info && <div style={{ color: "lightgreen" }}>{info}</div>}
 
         <div style={{ textAlign: "center" }}>
           Nemaš nalog? <Link to="/register">Registruj se</Link>
         </div>
       </form>
+    </div>
     </div>
   );
 };

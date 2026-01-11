@@ -10,11 +10,11 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} /> {/* Početna stranica */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/create-post" element={<UploadVideo />} /> {/* Ruta za upload videa */}
-        <Route path="/feed" element={<Feed/>} /> 
+        <Route path="/create-post" element={<UploadVideo />} />
+        <Route path="/feed" element={<Feed/>} />
         <Route path="/video/:id" element={<Video />} />
       </Routes>
     </Router>

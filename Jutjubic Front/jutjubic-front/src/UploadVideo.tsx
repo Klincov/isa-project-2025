@@ -36,9 +36,11 @@ const UploadVideo = () => {
     const formData = new FormData()
     formData.append('title', title)
     formData.append('description', description)
+
     tags.forEach(tag => formData.append('tags', tag))
     formData.append('video', video)
     formData.append('thumbnail', thumbnail)
+
     if (location) {
       formData.append('lat', location.lat.toString())
       formData.append('lon', location.lon.toString())
@@ -55,7 +57,10 @@ const UploadVideo = () => {
 
       if (!response.ok) {
         const err = await response.json()
-        setError(err.message || 'Greška na serveru')
+        if(response.status==403)
+          setError(err.message || 'Niste ulogovani')
+        else
+          setError(err.message || 'Greška na serveru')
         return
       }
 
@@ -75,7 +80,7 @@ const UploadVideo = () => {
       console.log('Video uspešno postavljen:', data)
     } catch (error) {
       setSuccess('')
-      setError('Greška prilikom slanja zahteva')
+      setError('Greška')
     }
   }
   const addTag = () => {
@@ -101,6 +106,7 @@ const UploadVideo = () => {
 
 
   return (
+    <div>
     <div className="prompt">
       <h1>Upload Video</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -143,7 +149,7 @@ const UploadVideo = () => {
             </button>
           </div>
 
-          <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ marginTop: '8px', display: 'flex',flexWrap:'wrap' }}>
             {tags.map(tag => (
               <span
                 key={tag}
@@ -152,7 +158,11 @@ const UploadVideo = () => {
                   borderRadius: '6px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  borderColor: 'green',
+                  borderStyle: 'solid',
+                  borderWidth: '2px'
+
                 }}
               >
                 {tag}
@@ -197,7 +207,7 @@ const UploadVideo = () => {
           <label>Izaberi lokaciju na mapi:</label>
 
           <MapContainer
-            center={[44.7866, 20.4489]} // Beograd default
+            center={[44.7866, 20.4489]}
             zoom={6}
             style={{ height: '300px', width: '100%' }}
           >
@@ -224,6 +234,7 @@ const UploadVideo = () => {
 
         <button type="submit">Postavi Video</button>
       </form>
+    </div>
     </div>
   )
 }

@@ -22,7 +22,7 @@ export default function VideoFeed() {
     <button type="button"> Dodaj video</button>
     </Link>
     </div>
-      {error && <p style={{ color: "salmon" }}>{error}</p>}
+      {error && <p style={{ color: "salmon", textAlign:"center" }}>Greška pri dobavljanju videa.</p>}
 
       <div
         style={{

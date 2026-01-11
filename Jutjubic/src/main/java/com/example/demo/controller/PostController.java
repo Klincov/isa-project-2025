@@ -11,6 +11,7 @@ import com.example.demo.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionTimedOutException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/upload-video")
@@ -31,7 +33,7 @@ public class PostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Post> createPost(
+    public ResponseEntity<?> createPost(
             @RequestParam String title,
             @RequestParam String description,
             @RequestParam List<String> tags,
@@ -50,17 +52,29 @@ public class PostController {
             throw new BadRequestException("Video fajl je obavezan.");
         }
 
-        if (!"video/mp4".equals(video.getContentType())) {
+        String thumbnailContentType = thumbnail.getContentType();
+        if (thumbnailContentType == null ||
+                (!thumbnailContentType.equals("image/jpeg") && !thumbnailContentType.equals("image/png"))) {
+            throw new BadRequestException("Thumbnail mora biti JPG ili PNG slika.");
+        }
+
+        String videoContentType = video.getContentType();
+        if (videoContentType == null || !videoContentType.equals("video/mp4")) {
             throw new BadRequestException("Video mora biti u MP4 formatu.");
         }
 
         AppUser user = ((AppUserDetails) authentication.getPrincipal()).getUser();
 
-        Post post = postService.createPost(
-                title, description, tags, video, thumbnail, user, lat, lon
-        );
+        try {
+            Post post = postService.createPost(
+                    title, description, tags, video, thumbnail, user, lat, lon
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(post);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
 }
