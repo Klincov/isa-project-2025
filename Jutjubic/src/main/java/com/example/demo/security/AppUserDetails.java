@@ -1,6 +1,6 @@
 package com.example.demo.security;
 
-import com.example.demo.entity.AppUser;
+import com.example.demo.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,10 +9,10 @@ import java.util.List;
 
 public class AppUserDetails implements UserDetails {
 
-    private final AppUser user;
+    private final User user;
 
-    public AppUserDetails(AppUser user) { this.user = user; }
-    public AppUser getUser() { return user; }
+    public AppUserDetails(User user) { this.user = user; }
+    public User getUser() { return user; }
 
     @Override public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(); // bez rola za sada

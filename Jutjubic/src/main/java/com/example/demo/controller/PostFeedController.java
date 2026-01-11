@@ -4,7 +4,6 @@ import com.example.demo.dto.PostDto;
 import com.example.demo.entity.Post;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.service.PostFeedService;
-import com.example.demo.service.PostService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 

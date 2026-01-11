@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Post;
 import com.example.demo.repository.PostRepository;
+import com.example.demo.service.FileStorageService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -15,23 +16,23 @@ import java.nio.file.Paths;
 public class FileController {
 
     private final PostRepository postRepository;
+    private final FileStorageService fileStorageService;
 
-    public FileController(PostRepository postRepository) {
+    public FileController(PostRepository postRepository,FileStorageService fileStorageService) {
         this.postRepository = postRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("/thumbnail/{postId}")
-    public ResponseEntity<Resource> thumbnail(@PathVariable Long postId) {
+    public ResponseEntity<byte[]> thumbnail(@PathVariable Long postId) {
         Post p = postRepository.findById(postId).orElseThrow();
-
-        Path path = Paths.get(p.getThumbnailPath());
-        Resource res = new FileSystemResource(path);
-
-        if (!res.exists()) return ResponseEntity.notFound().build();
+        byte[] image = fileStorageService.loadThumbnail(
+                p.getThumbnailPath()
+        );
 
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(res);
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(image);
     }
 
     @GetMapping("/video/{postId}")

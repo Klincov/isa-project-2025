@@ -1,11 +1,20 @@
 const API_URL = import.meta.env.VITE_API_URL as string;
 
+function getCookie(name: string): string | null {
+  return document.cookie
+    .split("; ")
+    .find(row => row.startsWith(name + "="))
+    ?.split("=")[1] ?? null;
+}
+
 async function request<T>(path: string, options: RequestInit): Promise<T> {
+  const csrfToken = getCookie("XSRF-TOKEN");
   const res = await fetch(`${API_URL}${path}`, {
     credentials: "include",
     ...options,
     headers: {
       "Content-Type": "application/json",
+      ...(csrfToken ? { "X-XSRF-TOKEN": csrfToken } : {}),
       ...(options.headers || {}),
     },
   });

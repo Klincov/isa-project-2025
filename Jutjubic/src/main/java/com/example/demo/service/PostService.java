@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.AppUser;
+import com.example.demo.entity.User;
 import com.example.demo.entity.Post;
 import com.example.demo.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class PostService {
             List<String> tags,
             MultipartFile video,
             MultipartFile thumbnail,
-            AppUser author,
+            User author,
             Double lat,
             Double lon
     ) throws IOException, InterruptedException {
@@ -56,7 +56,7 @@ public class PostService {
             return postTransactionService.savePostToDatabase(post);
 
         } catch (Exception e) {
-            System.out.println("Deleting files...");
+            System.out.println("Brisem brisem aa");
             if (videoPath != null) fileStorageService.deleteFileIfExists(videoPath);
             if (thumbnailPath != null) fileStorageService.deleteFileIfExists(thumbnailPath);
             throw e;

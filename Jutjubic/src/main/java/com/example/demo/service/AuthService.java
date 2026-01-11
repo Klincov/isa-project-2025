@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.AppUser;
+import com.example.demo.entity.User;
 import com.example.demo.entity.VerificationToken;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.repository.UserRepository;
@@ -20,10 +20,10 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Value("${app.base-url}")
-    private String baseUrl; // npr http://localhost:8080
+    private String baseUrl;
 
     public void register(RegisterRequest req) {
-        AppUser user = userService.registerNewUser(req);
+        User user = userService.registerNewUser(req);
 
         VerificationToken token = tokenService.createForUser(user);
         String link = baseUrl + "/api/auth/activate?token=" + token.getToken();
@@ -42,9 +42,7 @@ public class AuthService {
         }
 
         token.setConfirmedAt(Instant.now());
-        //tokenRepository.save(token);
-
-        AppUser user = token.getUser();
+        User user = token.getUser();
         user.setEnabled(true);
         userRepository.save(user);
     }

@@ -1,25 +1,20 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.PostDto;
-import com.example.demo.entity.AppUser;
+import com.example.demo.entity.User;
 import com.example.demo.entity.Post;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.UnauthorizedException;
-import com.example.demo.repository.PostRepository;
 import com.example.demo.security.AppUserDetails;
 import com.example.demo.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.TransactionTimedOutException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/upload-video")
@@ -63,7 +58,7 @@ public class PostController {
             throw new BadRequestException("Video mora biti u MP4 formatu.");
         }
 
-        AppUser user = ((AppUserDetails) authentication.getPrincipal()).getUser();
+        User user = ((AppUserDetails) authentication.getPrincipal()).getUser();
 
         try {
             Post post = postService.createPost(

@@ -39,7 +39,7 @@ public class Post {
     private Double longitude;
 
     @ManyToOne(optional = false)
-    private AppUser author;
+    private User author;
 
     public String getTitle() {
         return title;
@@ -105,11 +105,11 @@ public class Post {
         this.longitude = longitude;
     }
 
-    public AppUser getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(AppUser author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
