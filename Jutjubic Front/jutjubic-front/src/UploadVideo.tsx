@@ -57,7 +57,10 @@ const UploadVideo = () => {
 
       if (!response.ok) {
         const err = await response.json()
-        setError(err.message || 'Greška na serveru')
+        if(response.status==403)
+          setError(err.message || 'Niste ulogovani')
+        else
+          setError(err.message || 'Greška na serveru')
         return
       }
 
@@ -77,7 +80,7 @@ const UploadVideo = () => {
       console.log('Video uspešno postavljen:', data)
     } catch (error) {
       setSuccess('')
-      setError('Greška prilikom slanja zahteva')
+      setError('Greška')
     }
   }
   const addTag = () => {
@@ -149,6 +152,7 @@ const UploadVideo = () => {
           <div style={{ marginTop: '8px', display: 'flex',flexWrap:'wrap' }}>
             {tags.map(tag => (
               <span
+                key={tag}
                 style={{
                   padding: '4px 8px',
                   borderRadius: '6px',

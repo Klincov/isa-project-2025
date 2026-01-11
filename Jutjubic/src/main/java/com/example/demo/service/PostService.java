@@ -2,11 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Post;
-import com.example.demo.exception.ApiException;
-import com.example.demo.exception.FileStorageException;
 import com.example.demo.repository.PostRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,14 +15,15 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final FileStorageService fileStorageService;
+    private final PostTransactionService postTransactionService;
 
     public PostService(PostRepository postRepository,
-                       FileStorageService fileStorageService) {
+                       FileStorageService fileStorageService, PostTransactionService postTransactionService) {
         this.postRepository = postRepository;
         this.fileStorageService = fileStorageService;
+        this.postTransactionService = postTransactionService;
     }
 
-    @Transactional(timeout = 30)
     public Post createPost(
             String title,
             String description,
@@ -35,8 +33,7 @@ public class PostService {
             AppUser author,
             Double lat,
             Double lon
-    ) throws IOException {
-
+    ) throws IOException, InterruptedException {
         String videoPath = null;
         String thumbnailPath = null;
 
@@ -52,21 +49,21 @@ public class PostService {
             post.setThumbnailPath(thumbnailPath);
             post.setCreatedAt(LocalDateTime.now());
             post.setLatitude(lat);
-            System.out.println("aaaa");
             post.setLongitude(lon);
             post.setAuthor(author);
             post.setViewCount(0);
             post.setLikesCount(0);
+            return postTransactionService.savePostToDatabase(post);
 
-            return postRepository.save(post);
-
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.out.println("Deleting files...");
             if (videoPath != null) fileStorageService.deleteFileIfExists(videoPath);
             if (thumbnailPath != null) fileStorageService.deleteFileIfExists(thumbnailPath);
-            throw new FileStorageException("Greška pri čuvanju fajlova.");
-
+            throw e;
         }
+
     }
 
 }
+
 
