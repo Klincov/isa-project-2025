@@ -4,6 +4,7 @@ import com.example.demo.dto.PostDto;
 import com.example.demo.entity.Post;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.service.PostFeedService;
+import com.example.demo.service.ViewsService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +16,12 @@ public class PostFeedController {
 
     private final PostFeedService postFeedService;
     private final PostRepository postRepository;
+    private final ViewsService viewsService;
 
-    public PostFeedController(PostRepository postRepository, PostFeedService postFeedService) {
+    public PostFeedController(PostRepository postRepository, PostFeedService postFeedService,ViewsService viewsService) {
         this.postRepository = postRepository;
         this.postFeedService = postFeedService;
+        this.viewsService = viewsService;
     }
 
     @GetMapping
@@ -35,7 +38,7 @@ public class PostFeedController {
 
     @PostMapping("/{id}/view")
     public void registerView(@PathVariable Long id) {
-        postFeedService.registerView(id);
+        viewsService.Increment(id);
     }
 
 
@@ -54,7 +57,7 @@ public class PostFeedController {
                 p.getLatitude(),
                 p.getLongitude(),
                 p.getCreatedAt(),
-                p.getViewCount()
+                viewsService.Get(id)
         );
     }
 

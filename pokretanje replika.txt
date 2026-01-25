@@ -1,0 +1,4 @@
+java -jar target/Jutjubic-0.0.1-SNAPSHOT.jar --server.port=8081 --app.views-table=views_replica_1
+
+java -jar target/Jutjubic-0.0.1-SNAPSHOT.jar --server.port=8082 --app.views-table=views_replica_2
+

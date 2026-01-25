@@ -16,9 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
-
-@Configuration
 @RequiredArgsConstructor
+@Configuration
 public class SecurityConfig {
 
     private final AppUserDetailsService userDetailsService;
