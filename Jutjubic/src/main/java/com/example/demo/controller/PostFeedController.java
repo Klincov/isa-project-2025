@@ -7,6 +7,7 @@ import com.example.demo.service.PostFeedService;
 import com.example.demo.service.ViewsService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 import java.util.List;
 
@@ -38,8 +39,19 @@ public class PostFeedController {
 
     @PostMapping("/{id}/view")
     public void registerView(@PathVariable Long id) {
-        viewsService.Increment(id);
+        viewsService.increment(id);
     }
+
+    @GetMapping("/{id}/views/state")
+    public Map<String, Long> getViewsState(@PathVariable Long id) {
+        return viewsService.getState(id);
+    }
+
+    @PostMapping("/{id}/views/merge")
+    public void mergeViews(@PathVariable Long id, @RequestBody Map<String, Long> incoming) {
+        viewsService.mergeState(id, incoming);
+    }
+
 
 
     @GetMapping("/{id}")
@@ -57,7 +69,7 @@ public class PostFeedController {
                 p.getLatitude(),
                 p.getLongitude(),
                 p.getCreatedAt(),
-                viewsService.Get(id)
+                viewsService.getTotal(id)
         );
     }
 
