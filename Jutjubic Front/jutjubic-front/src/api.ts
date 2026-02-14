@@ -13,10 +13,11 @@ async function request<T>(path: string, options: RequestInit): Promise<T> {
     credentials: "include",
     ...options,
     headers: {
-      "Content-Type": "application/json",
-      ...(csrfToken ? { "X-XSRF-TOKEN": csrfToken } : {}),
-      ...(options.headers || {}),
-    },
+  ...(options.body ? { "Content-Type": "application/json" } : {}),
+  ...(csrfToken ? { "X-XSRF-TOKEN": csrfToken } : {}),
+  ...(options.headers || {}),
+},
+
   });
 
   const text = await res.text();
@@ -24,8 +25,10 @@ async function request<T>(path: string, options: RequestInit): Promise<T> {
   try { data = text ? JSON.parse(text) : null; } catch {}
 
   if (!res.ok) {
-    throw new Error(data?.message || text || `HTTP ${res.status}`);
+  const msg = (data && typeof data === "object" && "message" in data) ? (data as any).message : null;
+  throw new Error(msg || text || `HTTP ${res.status}`);
   }
+
   return data as T;
 }
 
@@ -66,7 +69,18 @@ export type PostDetailsDto = {
   longitude: number | null;
   createdAt: string;
   viewCount: number;
+  scheduledAt: string | null;
+  available: boolean;
 };
+
+export type PlaybackDto = {
+  available: boolean;
+  serverNow: string;
+  scheduledAt: string | null;
+  startOffsetSec: number;
+};
+
+
 
 export const api = {
   register: (body: RegisterRequest) =>
@@ -77,7 +91,8 @@ export const api = {
   listPosts: () => request<PostListItemDto[]>("/api/posts", { method: "GET" }),
   getPost: (id: string) => request<PostDetailsDto>(`/api/posts/${id}`, { method: "GET" }),
   likePost: (id: string) => request<ApiMessage>(`/api/posts/${id}/like`, { method: "POST" }),
-  registerView: (id: string) => request<ApiMessage>(`/api/posts/${id}/view`,{ method: "POST"}),
+  registerView: async (id: string) => {await fetch(`${API_URL}/api/posts/${id}/view`, { method: "POST", credentials: "include" });},
+  getPlayback: (id: string) => request<PlaybackDto>(`/api/posts/${id}/playback`, { method: "GET" }),
 };
 
 

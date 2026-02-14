@@ -38,6 +38,8 @@ public class Post {
     private Double latitude;
     private Double longitude;
 
+    private LocalDateTime scheduledAt;
+
     @ManyToOne(optional = false)
     private User author;
 
@@ -120,4 +122,8 @@ public class Post {
     public Long getViewCount(){return viewCount;}
 
     public void setViewCount(long v){this.viewCount = v;}
+
+    public void setScheduledAt(LocalDateTime scheduledAt) { this.scheduledAt = scheduledAt; }
+
+    public LocalDateTime getScheduledAt() {return scheduledAt;}
 }

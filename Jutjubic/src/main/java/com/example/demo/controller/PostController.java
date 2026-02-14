@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,6 +37,7 @@ public class PostController {
             @RequestParam MultipartFile thumbnail,
             @RequestParam(required = false) Double lat,
             @RequestParam(required = false) Double lon,
+            @RequestParam(required = false) String scheduledAt,
             Authentication authentication
     ) throws IOException {
 
@@ -58,11 +60,19 @@ public class PostController {
             throw new BadRequestException("Video mora biti u MP4 formatu.");
         }
 
+        LocalDateTime scheduled = null;
+        if (scheduledAt != null && !scheduledAt.isBlank()) {
+            scheduled = LocalDateTime.parse(scheduledAt);
+            if (scheduled.isBefore(LocalDateTime.now())) {
+                throw new BadRequestException("Zakazano vreme mora biti u buducnosti.");
+            }
+        }
+
         User user = ((AppUserDetails) authentication.getPrincipal()).getUser();
 
         try {
             Post post = postService.createPost(
-                    title, description, tags, video, thumbnail, user, lat, lon
+                    title, description, tags, video, thumbnail, user, lat, lon,scheduled
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(post);
         }
