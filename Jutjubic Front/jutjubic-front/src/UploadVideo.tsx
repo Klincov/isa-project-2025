@@ -24,6 +24,8 @@ const UploadVideo = () => {
   const [thumbnail, setThumbnail] = useState<File | null>(null)
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null)
   const [error, setError] = useState<string>('')
+  const [scheduledAt, setScheduledAt] = useState<string>('')
+
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -40,6 +42,11 @@ const UploadVideo = () => {
     tags.forEach(tag => formData.append('tags', tag))
     formData.append('video', video)
     formData.append('thumbnail', thumbnail)
+
+    if (scheduledAt) {
+      formData.append('scheduledAt', scheduledAt)
+    }
+
 
     if (location) {
       formData.append('lat', location.lat.toString())
@@ -180,6 +187,15 @@ const UploadVideo = () => {
               </span>
             ))}
           </div>
+        </div>
+
+        <div>
+          <label>Zakazani prikaz (opciono):</label>
+          <input
+            type="datetime-local"
+            value={scheduledAt}
+            onChange={(e) => setScheduledAt(e.target.value)}
+          />
         </div>
 
 

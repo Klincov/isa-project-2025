@@ -6,6 +6,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 
 import java.util.stream.Collectors;
 
@@ -70,5 +72,10 @@ public class ApiExceptionHandler {
                 .body(new ApiMessage("Nalog nije aktiviran. Proveri email."));
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiMessage noStaticResource(NoResourceFoundException ex) {
+        return new ApiMessage("Not found");
+    }
 
 }

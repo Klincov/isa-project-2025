@@ -32,7 +32,8 @@ public class PostService {
             MultipartFile thumbnail,
             User author,
             Double lat,
-            Double lon
+            Double lon,
+            LocalDateTime scheduledAt
     ) throws IOException, InterruptedException {
         String videoPath = null;
         String thumbnailPath = null;
@@ -53,6 +54,7 @@ public class PostService {
             post.setAuthor(author);
             post.setViewCount(0);
             post.setLikesCount(0);
+            post.setScheduledAt(scheduledAt);
             return postTransactionService.savePostToDatabase(post);
 
         } catch (Exception e) {

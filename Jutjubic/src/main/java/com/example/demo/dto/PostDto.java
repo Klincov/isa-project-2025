@@ -17,7 +17,9 @@ public class PostDto {
                                  Double latitude,
                                  Double longitude,
                                  LocalDateTime createdAt,
-    long viewCount) {}
+                                 long viewCount,
+                                 LocalDateTime scheduledAt,
+                                 boolean available) {}
 
     public record ApiMessage(String message) {}
 }
