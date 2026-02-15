@@ -44,4 +44,8 @@ public class User {
 
     @Column(nullable=false)
     private Instant createdAt;
+
+    public String getUsername() {
+        return username;
+    }
 }
