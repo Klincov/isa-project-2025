@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,16 @@ public class UserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    public String getUsernameFromEmail(String email){
+        Optional<User> user = userRepository.findByEmailIgnoreCase(email);
+        if(user.isPresent()){
+            return user.get().getUsername();
+        }
+        else{
+            return "guest";
+        }
     }
 
     public void enableUser(User user) {
