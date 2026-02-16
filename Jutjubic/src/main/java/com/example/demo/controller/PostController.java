@@ -2,10 +2,17 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.entity.Post;
+import com.example.demo.events.EventPublisher;
+import com.example.demo.events.UploadEvent;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.security.AppUserDetails;
 import com.example.demo.service.PostService;
+import com.example.events.UploadEventProto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +24,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/upload-video")
 public class PostController {
 
     private final PostService postService;
-
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
+    private final EventPublisher eventPublisher;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @CrossOrigin(origins = "http://localhost:5173")
@@ -74,6 +79,15 @@ public class PostController {
             Post post = postService.createPost(
                     title, description, tags, video, thumbnail, user, lat, lon,scheduled
             );
+            UploadEvent event = new UploadEvent(
+                    post.getId(),
+                    post.getTitle(),
+                    user.getUsername(),
+                    video.getSize(),
+                    post.getCreatedAt()
+            );
+            eventPublisher.sendJsonEvent(event);
+            eventPublisher.sendProtoEvent(event);
             return ResponseEntity.status(HttpStatus.CREATED).body(post);
         }
         catch (Exception e){
@@ -81,6 +95,7 @@ public class PostController {
         }
 
     }
+
 
 }
 
