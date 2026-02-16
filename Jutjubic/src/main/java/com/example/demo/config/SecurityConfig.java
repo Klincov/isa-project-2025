@@ -42,33 +42,20 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
-
                 .securityContext(security ->
                         security.requireExplicitSave(false)
                 )
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        .requestMatchers(
-                                "/api/auth/register",
-                                "/api/auth/login",
-                                "/api/auth/activate"
-                        ).permitAll()
-
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/activate").permitAll()
                         .requestMatchers(HttpMethod.POST, "/upload-video").authenticated()
                         .anyRequest().permitAll()
                 )
-
-
-                // rate limit pre auth
-                .addFilterBefore(
-                        ipRateLimitFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterBefore(ipRateLimitFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
