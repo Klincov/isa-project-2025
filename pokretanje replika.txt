@@ -5,6 +5,7 @@ java -jar target/Jutjubic-0.0.1-SNAPSHOT.jar \
   --spring.datasource.url="jdbc:postgresql://localhost:5432/db?currentSchema=public,replica1" \
   --spring.datasource.username=postgres \
   --spring.datasource.password=password
+java -jar target/Jutjubic-0.0.1-SNAPSHOT.jar --server.port=8081 --app.replica-id=replica-1 --app.other-replicas=http://localhost:8082 --spring.datasource.url="jdbc:postgresql://localhost:5432/db?currentSchema=public,replica1" --spring.datasource.username=postgres --spring.datasource.password=password
 
 java -jar target/Jutjubic-0.0.1-SNAPSHOT.jar \
   --server.port=8082 \
