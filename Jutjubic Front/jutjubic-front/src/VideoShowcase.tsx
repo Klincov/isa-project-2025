@@ -83,43 +83,40 @@ export default function VideoDetails() {
   };
 
   useEffect(() => {
-    if (!id) return;
+  if (!id) return;
 
-    let timer: number | null = null;
+  let timer: number | null = null;
 
-    const init = async () => {
-      try {
-        await load();
-        const pb = await loadPlayback();
+  const init = async () => {
+    try {
+      await load();
+      const pb = await loadPlayback();
 
-        if (pb && !pb.available) {
-          timer = window.setInterval(async () => {
-            try {
-              const next = await loadPlayback();
-              if (next.available) {
-                if (timer) window.clearInterval(timer);
-                timer = null;
-              }
-            } catch (e: unknown) {
-              if (e instanceof Error) {
-                setError(e.message);
-              }
+      if (pb && !pb.available) {
+        timer = window.setInterval(async () => {
+          try {
+            const next = await loadPlayback();
+            if (next.available) {
+              if (timer) window.clearInterval(timer);
+              timer = null;
             }
-          }, 1000);
-        }
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          setError(e.message);
-        }
+          } catch (e: unknown) {
+            if (e instanceof Error) setError(e.message);
+          }
+        }, 2000); // stavi 2000-5000ms, 1000ms je nepotrebno agresivno
       }
-    };
+    } catch (e: unknown) {
+      if (e instanceof Error) setError(e.message);
+    }
+  };
 
-    init();
+  init();
 
-    return () => {
-      if (timer) window.clearInterval(timer);
-    };
-  }, [id, load, loadPlayback]);
+  return () => {
+    if (timer) window.clearInterval(timer);
+  };
+}, [id]);
+
 
   useEffect(() => {
     if (!id) return;

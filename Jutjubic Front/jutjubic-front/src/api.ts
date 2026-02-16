@@ -80,7 +80,11 @@ export type PlaybackDto = {
   startOffsetSec: number;
 };
 
-
+export type PopularVideoItemDto = {
+  rank: number;
+  postId: number;
+  score: number;
+};
 
 export const api = {
   register: (body: RegisterRequest) =>
@@ -93,6 +97,9 @@ export const api = {
   likePost: (id: string) => request<ApiMessage>(`/api/posts/${id}/like`, { method: "POST" }),
   registerView: async (id: string) => {await fetch(`${API_URL}/api/posts/${id}/view`, { method: "POST", credentials: "include" });},
   getPlayback: (id: string) => request<PlaybackDto>(`/api/posts/${id}/playback`, { method: "GET" }),
+  getPopularTop3: () => request<PopularVideoItemDto[]>("/api/home/popular", { method: "GET" }),
+  getPostDetails: (id: number) => request<PostDetailsDto>(`/api/posts/${id}`, { method: "GET" }),
+
 };
 
 
